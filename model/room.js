@@ -20,7 +20,7 @@ const roomSchema= new mongoose.Schema({
     },
     image:{
         type:String
-    },
+    }
     
    
 })

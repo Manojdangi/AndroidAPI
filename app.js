@@ -17,6 +17,7 @@ const path = require('path');
 const multer = require('multer');
 
 
+//to register the user
 app.post('/user_register', function (req, res) {
     var fullname = req.body.fullname;
     var phone = req.body.phone;
@@ -24,7 +25,6 @@ app.post('/user_register', function (req, res) {
     var email = req.body.email;
     var password = req.body.password;
     var type = "normal_user";
-
 
     var user_data = new User({
 
@@ -58,6 +58,7 @@ app.post('/user_register', function (req, res) {
 })
 
 
+//to register the user
 app.post('/userRegister',function(req,res){
     var fullname=req.body.fullname;
     var phone=req.body.phone;
@@ -101,12 +102,10 @@ app.post('/userRegister',function(req,res){
     
     })
 
-
+//for user login
     app.post('/userLogin', function(req,res){
         var email= req.body.email;
         var pass=req.body.password;
-     //  console.log(req.body);
-    
        
         User.find({
           email:email,
@@ -126,7 +125,7 @@ app.post('/userRegister',function(req,res){
       })
     
     
-    
+    //for image upload
       app.use("/userimg",express.static("userimg"));
      
       var Image;
@@ -150,7 +149,8 @@ app.post('/userRegister',function(req,res){
         fileFilter: imageFileFilter,
         limits: { fileSize: 5000000
         }});
-        
+      
+    //for image upload    
        app.post('/uploadimg', upload.single('files'), (req, res) => {
            console.log(Image);
          res.send(JSON.stringify({
@@ -161,7 +161,7 @@ app.post('/userRegister',function(req,res){
       
        })
       
-    
+   //to update the user 
       app.post('/updateUser/:id', function (req, res) {
         var fullname = req.body.fullname;
         var phone = req.body.phone;
@@ -192,6 +192,7 @@ app.post('/userRegister',function(req,res){
     })
     
 
+ //to get user details   
 app.get('/users', auth, function (req, res) {
     res.send(req.user);
 
@@ -211,6 +212,7 @@ app.post("/login", async function (req, res) {
 
 })
 
+//to logout the user
 app.post('/logout', auth, async (req, res) => {
     try {
         req.user.tokens = []
@@ -221,8 +223,7 @@ app.post('/logout', auth, async (req, res) => {
     }
 })
 
-
-
+//for image upload
 var Image;
 app.use("/hotelimages", express.static("hotelimages"))
 var storage = multer.diskStorage({
@@ -255,6 +256,7 @@ app.post('/imageupload', upload.single('imageFile'), (req, res) => {
 })
 
 
+//to add the hotel
 app.post('/addhotel', function (req, res) {
     var hotelname = req.body.hotelname;
     var phone = req.body.phone;
@@ -290,15 +292,20 @@ app.post('/addhotel', function (req, res) {
 
 })
 
+//to get the hotel details
 app.get('/gethotels', function (req, res) {
     Hotel.find().then(function (hotel) {
-        res.send(hotel);
+        
+            res.send(hotel)
+            console.log(hotel)
+    
     }).catch(function (e) {
         res.send(e)
     });
 })
 
 
+//to delete the hotel details
 app.delete('/deletehotel/:id', function (req, res) {
     var id=req.params.id;
 
@@ -327,6 +334,8 @@ app.get('/edithotel/:id', function (req, res) {
     });
 })
 
+
+//to update the hotel details
 app.post('/updatehotel', function (req, res) {
     var hotelname = req.body.hotelname;
     var phone = req.body.phone;
@@ -336,17 +345,17 @@ app.post('/updatehotel', function (req, res) {
     var u_id = req.body.id;
 
 
-    // Room.updateMany({hotelID:u_id},
-    // {
-    //     $set:{
-    //         hotelname:hotelname
-    //     }
-    // }).then(function(){
-    //     res.json({message:"success"})
-    //     console.log('success')
-    // }).catch(function(){
-    //     console.log('error')
-    // });
+    Room.updateMany({hotelID:u_id},
+    {
+        $set:{
+            hotelname:hotelname
+        }
+    }).then(function(){
+        res.json({message:"success"})
+        console.log('success')
+    }).catch(function(){
+        console.log('error')
+    });
 
     Hotel.updateOne({_id:new ObjectID(u_id)},
     {
@@ -367,6 +376,7 @@ app.post('/updatehotel', function (req, res) {
 })
 
 
+//for image upload
 var Image;
 app.use("/roomimages", express.static("roomimages"))
 var storage = multer.diskStorage({
@@ -399,7 +409,7 @@ app.post('/roomimageupload', upload.single('imageFile'), (req, res) => {
 })
 
 
-
+//to add room details
 app.post('/addroom', function (req, res) {
     var hotelID = req.body.hotelID;
     var roomname = req.body.roomname;
@@ -423,11 +433,11 @@ app.post('/addroom', function (req, res) {
 
             }).catch(function (e) {
                 res.send(e);
-
         
     })
     })
 
+  //to get the room details  
     app.get('/getrooms', function (req, res) {
         Room.find().then(function (room) {
             res.send(room);
@@ -436,6 +446,7 @@ app.post('/addroom', function (req, res) {
         });
     })
 
+    //to delete the room
     app.delete('/deleteroom/:id', function (req, res) {
         Room.findByIdAndDelete(req.params.id).then(function () {
             res.json({ message: "room_deleted" })
@@ -444,6 +455,7 @@ app.post('/addroom', function (req, res) {
         })
     })
 
+    //to edit the room details
     app.get('/editroom/:id', function (req, res) {
         var id = req.params.id;
     
@@ -455,7 +467,8 @@ app.post('/addroom', function (req, res) {
         });
     })
     
-   
+  
+    //to update the room details
     app.post('/updateroom', function (req, res) {
         var roomname = req.body.roomname;
         var roomtype = req.body.roomtype;
@@ -463,7 +476,6 @@ app.post('/addroom', function (req, res) {
         var rate = req.body.rate;
         var u_id = req.body.id;
         
-    
         Room.updateOne({_id:new ObjectID(u_id)},
         {
             $set:{
@@ -482,6 +494,7 @@ app.post('/addroom', function (req, res) {
     })
     
 
+    //to get the hotel details
     app.get('/gethotel_details/:id', function (req, res) {
         var id = req.params.id;
     
@@ -493,6 +506,7 @@ app.post('/addroom', function (req, res) {
         });
     })
 
+//to add review    
 app.post('/addreview', function (req, res) {
     var hotelID = req.body.hotelID;
     var fullname = req.body.fullname;
@@ -508,15 +522,14 @@ app.post('/addreview', function (req, res) {
     })
     
     review_data.save().then(function (data) {
-                res.json({ message: "register" })
+                res.send(JSON.stringify('Review_Added'));
 
             }).catch(function (e) {
                 res.send(e);
-
-        
     })
     })
 
+//to get the review details
     app.get('/getreview_details/:id', function (req, res) {
         var id = req.params.id;
     
@@ -528,6 +541,7 @@ app.post('/addreview', function (req, res) {
         });
     })
 
+//to add booking     
     app.post('/booking', function (req, res) {
         var hotelId = req.body.hotelId;
         var hotelname = req.body.hotelname;
@@ -536,10 +550,7 @@ app.post('/addreview', function (req, res) {
         var phone = req.body.phone;
         var description = req.body.description;
         var status = req.body.status;
-
-      //  console.log(req.body)
-    
-    
+      
         var booking_data = new Booking({
     
             hotelID: hotelId,
@@ -552,24 +563,24 @@ app.post('/addreview', function (req, res) {
         })
 
         booking_data.save().then(function (data) {
-            res.json({ message: "register" })
+            res.send(JSON.stringify('Booking_Query_Added'))
 
         }).catch(function (e) {
-            res.send(e);
-
-    
+            res.send(e); 
 })
     })
 
+ 
+  //to get the booking details  
     app.get('/getbooking_details',function(req,res){
         Booking.find().then(function (booking) {
             res.send(booking);
         }).catch(function (e) {
             res.send(e)
         });
-
     })
 
+ //to edit the booking   
     app.get('/editbooking/:id', function (req, res) {
         var id = req.params.id;
     
@@ -581,7 +592,7 @@ app.post('/addreview', function (req, res) {
         });
     })
 
-
+//to update the booking details
     app.post('/updatebooking', function (req, res) {
         var hotelname = req.body.hotelname;
         var fullname = req.body.fullname;
@@ -608,6 +619,7 @@ app.post('/addreview', function (req, res) {
     
     })
 
+//to delete thr booking details    
     app.delete('/deletebooking/:id', function (req, res) {
         Booking.findByIdAndDelete(req.params.id).then(function () {
             res.json({ message: "Booking_deleted" })
@@ -616,7 +628,8 @@ app.post('/addreview', function (req, res) {
         })
     })
 
-    app.get('/get_users_hotel_details/:id', function(req,res){
+    //to get the specific user booking details
+    app.get('/get_users_booking_details/:id', function(req,res){
         var userid= req.params.id
         console.log(userid)
         console.log(req.body);
